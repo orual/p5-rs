@@ -1,0 +1,12 @@
+[package]
+name = "p5-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy = "0.14.1"
+nalgebra = "0.33.0"
+nalgebra-macros = "0.2.2"
+noise = "0.9.0"
+rand = "0.8.5"
+statrs = "0.17.1"
