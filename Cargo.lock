@@ -2943,6 +2943,7 @@ dependencies = [
  "nalgebra-macros",
  "noise",
  "rand",
+ "rand_chacha",
  "statrs",
 ]
 
