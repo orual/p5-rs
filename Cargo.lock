@@ -2942,6 +2942,7 @@ dependencies = [
  "nalgebra 0.33.0",
  "nalgebra-macros",
  "noise",
+ "num-traits",
  "rand",
  "rand_chacha",
  "statrs",

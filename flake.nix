@@ -3,14 +3,13 @@
     flake-utils.url = "github:numtide/flake-utils";
     naersk.url = "github:nix-community/naersk";
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    devshell.url = "github:numtide/devshell";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, flake-utils, naersk, nixpkgs, rust-overlay, devshell, ... }:
+  outputs = { flake-utils, naersk, nixpkgs, rust-overlay, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];
@@ -43,8 +42,8 @@
 
         nativeBuildInputs = with pkgs; [
           pkg-config
-          stdenv.cc
         ];
+
         buildInputs = with pkgs; [
           pkg-config
           stdenv.cc
@@ -85,39 +84,17 @@
           nativeBuildInputs = nativeBuildInputs;
         };
 
-        packages.devshell = self.outputs.devShells.${system}.default;
-
-        devShells.default =
-          let
-            pkgs = import nixpkgs {
-              inherit system;
-              overlays = [ devshell.overlays.default ];
-            };
-          in
-          pkgs.devshell.mkShell ({ config, lib, ... }: {
-            name = "p5rs";
-            env = [
-              {
-                name = "LD_LIBRARY_PATH";
-                value = lib.makeLibraryPath buildInputs;
-              }
-            ];
-
-            packages = [
-              defaultPackage
-              toolchain
-              pkgs.cargo-udeps
-            ];
-
-            commands = [
-              {
-                name = "greet";
-                command = ''
-                  printf -- 'Hello, %s!\n' "''${1:-world}"
-                '';
-              }
-            ];
-          } // cargoConfig);
+        devShell = pkgs.mkShell
+          (
+            {
+              inputsFrom = [ defaultPackage ];
+              buildInputs = buildInputs;
+              nativeBuildInputs = nativeBuildInputs;
+              packages = [
+                defaultPackage
+              ];
+            } // cargoConfig
+          );
       }
     );
 }
