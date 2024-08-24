@@ -56,11 +56,26 @@ where
     fn exp(self) -> Self::Output {
         if self.rem(T::one()).is_zero() {
             let power: i32 = Into::<i32>::into(self);
-            core::f64::consts::E.powi(power).into()
+            std::f64::consts::E.powi(power).into()
         } else {
             let power: f64 = self.into();
-            core::f64::consts::E.powf(power).into()
+            std::f64::consts::E.powf(power).into()
         }
+    }
+}
+
+pub trait Sq {
+    type Output;
+    fn sq(self) -> Self::Output;
+}
+
+impl<T> Sq for T
+where
+    T: Num + Copy,
+{
+    type Output = T;
+    fn sq(self) -> Self::Output {
+        self * self
     }
 }
 
